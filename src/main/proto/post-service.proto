@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package post;
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.example.simplegrpcpost2604.grpc";
+
+service PostService {
+  rpc PublishPost (PostPublishRequest) returns (PostPublishResponse);
+  rpc ReadPostOne (PostReadOneRequest) returns (PostReadOneResponse);
+  rpc ReadPostList (google.protobuf.Empty) returns (PostReadListResponse);
+  rpc EditPost (PostEditRequest) returns (PostEditResponse);
+  rpc DeletePost (PostDeleteRequest) returns (PostDeleteResponse);
+}
+
+message PostPublishRequest {
+    string title = 1;
+    string content = 2;
+}
+message PostPublishResponse {
+    int64 id = 1;
+    string title = 2;
+    string content = 3;
+}
+
+message PostReadOneRequest {
+    int64 id = 1;
+}
+message PostReadOneResponse {
+    int64 id = 1;
+    string title = 2;
+    string content = 3;
+}
+
+message PostReadListResponse {
+    repeated PostReadOneRequest postReadOneResponseList = 1;
+}
+
+message PostEditRequest {
+    int64 id = 1;
+    string title = 2;
+    string content = 3;
+}
+message PostEditResponse {
+    int64 id = 1;
+    string title = 2;
+    string content = 3;
+}
+
+message PostDeleteRequest {
+    int64 id = 1;
+}
+message PostDeleteResponse {
+    int64 id = 1;
+}

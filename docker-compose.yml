@@ -1,0 +1,17 @@
+services:
+  grpc-postgres14:
+    image: postgres:14
+    environment:
+      TZ: Asia/Seoul
+      POSTGRES_DB: grpc_demo
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-root}
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=C --lc-ctype=C'
+    ports:
+      - ${POSTGRES_PORT:-5432}:5432
+    restart: on-failure
+    volumes:
+      - volumes_grpc_user_postgres14:/var/lib/postgresql/data
+
+volumes:
+  volumes_grpc_user_postgres14:
