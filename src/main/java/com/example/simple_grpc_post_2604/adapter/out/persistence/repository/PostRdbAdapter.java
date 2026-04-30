@@ -33,12 +33,12 @@ public class PostRdbAdapter implements PostRepository {
     }
 
     @Override
-    public Post findPostById(Long userId) {
-        log.info("[PostRdbAdapter/findPostById] request user id: {}", userId);
-        PostEntity postById = postRdbRepository.findById(userId)
+    public Post findPostById(Long postId) {
+        log.info("[PostRdbAdapter/findPostById] request post id: {}", postId);
+        PostEntity postById = postRdbRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다.")
                 );
-        log.info("[PostRdbAdapter/findPostById] find user id: {}", postById.getId());
+        log.info("[PostRdbAdapter/findPostById] find post id: {}", postById.getId());
 
         return Post.restore(postById.getId(),
                 postById.getTitle(),
@@ -65,17 +65,17 @@ public class PostRdbAdapter implements PostRepository {
 
     @Override
     public int editPost(Post post) {
-        log.info("[PostRdbAdapter/deletePostById] request post id: {}", post.id());
+        log.info("[PostRdbAdapter/editPost] request post id: {}", post.id());
         return postRdbRepository.updatePostFields(post.id(), post.title(), post.content(), post.status());
     }
 
     @Override
-    public Long deletePostById(Long userId) {
-        log.info("[PostRdbAdapter/deletePostById] request user id: {}", userId);
+    public Long deletePostById(Long postId) {
+        log.info("[PostRdbAdapter/deletePostById] request post id: {}", postId);
 
         try {
-            postRdbRepository.deleteById(userId);
-            return userId;
+            postRdbRepository.deleteById(postId);
+            return postId;
         } catch(Exception ex) {
             throw new IllegalArgumentException("삭제를 실패했습니다.");
         }

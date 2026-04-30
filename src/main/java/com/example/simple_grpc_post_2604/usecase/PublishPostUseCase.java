@@ -2,7 +2,6 @@ package com.example.simple_grpc_post_2604.usecase;
 
 import com.example.simple_grpc_post_2604.domain.Post;
 import com.example.simple_grpc_post_2604.domain.PostRepository;
-import com.example.simplegrpcpost2604.grpc.PostPublishResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

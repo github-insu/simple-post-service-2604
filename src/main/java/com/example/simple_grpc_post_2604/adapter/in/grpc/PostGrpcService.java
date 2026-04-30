@@ -57,7 +57,7 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
     @Override
     public void readPostOne(PostReadOneRequest request, StreamObserver<PostReadOneResponse> responseObserver) {
 
-        log.info("[PostGrpcService/readPostOne] request id: {}", request.getId());
+        log.info("[PostGrpcService/readPostOne] request post id: {}", request.getId());
         Post postById = readPostOneUseCase.readPostOne(request.getId());
         log.info("[PostGrpcService/readPostOne] find post id: {}", postById.id());
         PostReadOneResponse response = PostReadOneResponse.newBuilder()
@@ -121,7 +121,7 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
 
     @Override
     public void deletePost(PostDeleteRequest request, StreamObserver<PostDeleteResponse> responseObserver) {
-        log.info("[PostGrpcService/deletePost] request user id: {}", request.getId());
+        log.info("[PostGrpcService/deletePost] request post id: {}", request.getId());
         Long deletedUserIdById = deletePostUseCase.deletePost(request.getId());
         PostDeleteResponse response = PostDeleteResponse.newBuilder()
                 .setId(deletedUserIdById)
@@ -130,5 +130,4 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
-//    }
 }
