@@ -58,13 +58,6 @@ public class Post {
         this.content = newContent;
     }
 
-    public void delete() {
-        if (this.status != PostStatus.PUBLISHED) {
-            throw new IllegalStateException("게시글을 삭제할 수 없습니다.");
-        }
-        this.status = PostStatus.REMOVED;
-    }
-
     public Long id() {
         return this.id;
     }
