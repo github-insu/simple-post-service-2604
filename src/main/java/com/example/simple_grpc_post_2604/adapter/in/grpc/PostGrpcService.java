@@ -1,12 +1,16 @@
 package com.example.simple_grpc_post_2604.adapter.in.grpc;
 
 import com.example.simple_grpc_post_2604.domain.Post;
+import com.example.simple_grpc_post_2604.domain.status.PostStatus;
 import com.example.simple_grpc_post_2604.usecase.DeletePostUseCase;
+import com.example.simple_grpc_post_2604.usecase.EditPostUseCase;
 import com.example.simple_grpc_post_2604.usecase.PublishPostUseCase;
 import com.example.simple_grpc_post_2604.usecase.ReadPostListUseCase;
 import com.example.simple_grpc_post_2604.usecase.ReadPostOneUseCase;
 import com.example.simplegrpcpost2604.grpc.PostDeleteRequest;
 import com.example.simplegrpcpost2604.grpc.PostDeleteResponse;
+import com.example.simplegrpcpost2604.grpc.PostEditRequest;
+import com.example.simplegrpcpost2604.grpc.PostEditResponse;
 import com.example.simplegrpcpost2604.grpc.PostPublishRequest;
 import com.example.simplegrpcpost2604.grpc.PostPublishResponse;
 import com.example.simplegrpcpost2604.grpc.PostReadListResponse;
@@ -29,7 +33,7 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
     private final PublishPostUseCase publishPostUseCase;
     private final ReadPostOneUseCase readPostOneUseCase;
     private final ReadPostListUseCase readPostListUseCase;
-//    private final EditPostUseCase editPostUseCase;
+    private final EditPostUseCase editPostUseCase;
     private final DeletePostUseCase deletePostUseCase;
 
     @Override
@@ -89,11 +93,31 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
         responseObserver.onNext(responseListBuilder.build());
         responseObserver.onCompleted();
     }
-//
-//    @Override
-//    public void editPost(PostEditRequest request, StreamObserver<PostEditResponse> responseObserver) {
-//        super.editPost(request, responseObserver);
-//    }
+
+    @Override
+    public void editPost(PostEditRequest request, StreamObserver<PostEditResponse> responseObserver) {
+        log.info("[PostGrpcService/editPost] request post id: {}", request.getId());
+        log.info("[PostGrpcService/editPost] request post title: {}", request.getTitle());
+        Post requestPost = Post.restore(
+                request.getId(),
+                request.getTitle(),
+                request.getContent(),
+                PostStatus.PUBLISHED
+        );
+
+        Post editedPost = editPostUseCase.editPost(requestPost);
+        log.info("[PostGrpcService/editPost] updated post id: {}", request.getId());
+        log.info("[PostGrpcService/editPost] updated post title: {}", request.getTitle());
+
+        PostEditResponse response = PostEditResponse.newBuilder()
+                .setId(editedPost.id())
+                .setTitle(editedPost.title())
+                .setContent(editedPost.content())
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
 
     @Override
     public void deletePost(PostDeleteRequest request, StreamObserver<PostDeleteResponse> responseObserver) {

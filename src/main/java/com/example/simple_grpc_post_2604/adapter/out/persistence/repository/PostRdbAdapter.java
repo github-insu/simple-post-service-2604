@@ -64,6 +64,12 @@ public class PostRdbAdapter implements PostRepository {
     }
 
     @Override
+    public int editPost(Post post) {
+        log.info("[PostRdbAdapter/deletePostById] request post id: {}", post.id());
+        return postRdbRepository.updatePostFields(post.id(), post.title(), post.content(), post.status());
+    }
+
+    @Override
     public Long deletePostById(Long userId) {
         log.info("[PostRdbAdapter/deletePostById] request user id: {}", userId);
 
