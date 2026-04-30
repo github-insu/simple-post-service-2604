@@ -1,15 +1,9 @@
 package com.example.simple_grpc_post_2604.adapter.in.grpc;
 
 import com.example.simple_grpc_post_2604.domain.Post;
-import com.example.simple_grpc_post_2604.usecase.DeletePostUseCase;
-import com.example.simple_grpc_post_2604.usecase.EditPostUseCase;
 import com.example.simple_grpc_post_2604.usecase.PublishPostUseCase;
 import com.example.simple_grpc_post_2604.usecase.ReadPostListUseCase;
 import com.example.simple_grpc_post_2604.usecase.ReadPostOneUseCase;
-import com.example.simplegrpcpost2604.grpc.PostDeleteRequest;
-import com.example.simplegrpcpost2604.grpc.PostDeleteResponse;
-import com.example.simplegrpcpost2604.grpc.PostEditRequest;
-import com.example.simplegrpcpost2604.grpc.PostEditResponse;
 import com.example.simplegrpcpost2604.grpc.PostPublishRequest;
 import com.example.simplegrpcpost2604.grpc.PostPublishResponse;
 import com.example.simplegrpcpost2604.grpc.PostReadListResponse;
@@ -22,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.grpc.server.service.GrpcService;
 
+import java.util.List;
+
 @GrpcService
 @RequiredArgsConstructor
 @Slf4j
@@ -29,7 +25,7 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
 
     private final PublishPostUseCase publishPostUseCase;
     private final ReadPostOneUseCase readPostOneUseCase;
-//    private final ReadPostListUseCase readPostListUseCase;
+    private final ReadPostListUseCase readPostListUseCase;
 //    private final EditPostUseCase editPostUseCase;
 //    private final DeletePostUseCase deletePostUseCase;
 
@@ -66,11 +62,31 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
-//
-//    @Override
-//    public void readPostList(Empty request, StreamObserver<PostReadListResponse> responseObserver) {
-//        super.readPostList(request, responseObserver);
-//    }
+
+    @Override
+    public void readPostList(Empty request, StreamObserver<PostReadListResponse> responseObserver) {
+
+        log.info("[PostGrpcService/readPostList] 함수 호출 성공");
+        List<Post> postList = readPostListUseCase.readPostList();
+        log.info("[PostGrpcService/readPostList] list size: {}", postList.size());
+        log.info("[PostGrpcService/readPostList] list[0] title: {}", postList.getFirst().title());
+
+        PostReadListResponse.Builder responseListBuilder = PostReadListResponse.newBuilder();
+
+        for (Post post: postList) {
+            responseListBuilder.addPostReadOneResponseList(
+                    PostReadOneResponse.newBuilder()
+                            .setId(post.id())
+                            .setTitle(post.title())
+                            .setContent(post.content())
+                            .build()
+            );
+        }
+
+
+        responseObserver.onNext(responseListBuilder.build());
+        responseObserver.onCompleted();
+    }
 //
 //    @Override
 //    public void editPost(PostEditRequest request, StreamObserver<PostEditResponse> responseObserver) {

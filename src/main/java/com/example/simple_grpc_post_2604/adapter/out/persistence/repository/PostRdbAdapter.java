@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 @Slf4j
@@ -43,5 +45,21 @@ public class PostRdbAdapter implements PostRepository {
                 postById.getContent(),
                 postById.getStatus()
         );
+    }
+
+    @Override
+    public List<Post> findPostAll() {
+        log.info("[PostRdbAdapter/findPostAll] 함수 호출 성공");
+        List<PostEntity> entityList = postRdbRepository.findAll();
+        log.info("[PostRdbAdapter/findPostAll] list size: {}", entityList.size());
+        log.info("[PostRdbAdapter/findPostAll] list[0] title: {}", entityList.getFirst().getTitle());
+
+        return entityList.stream()
+                .map(entity -> Post.restore(
+                        entity.getId(),
+                        entity.getTitle(),
+                        entity.getContent(),
+                        entity.getStatus()))
+                .toList();
     }
 }
