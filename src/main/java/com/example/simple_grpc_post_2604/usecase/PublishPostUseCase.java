@@ -16,16 +16,12 @@ public class PublishPostUseCase {
     private final PostRepository postRepository;
 
     @Transactional
-    public PostPublishResponse publish(Post post) {
+    public Post publish(Post post) {
         log.info("[PublishPostUseCase/publish] post title: {}", post.title());
 
         Post savedPost = postRepository.save(post);
         log.info("[PublishPostUseCase/publish] saved post title: {}", savedPost.title());
 
-        return PostPublishResponse.newBuilder()
-                .setId(savedPost.id())
-                .setTitle(savedPost.title())
-                .setContent(savedPost.content())
-                .build();
+        return savedPost;
     }
 }

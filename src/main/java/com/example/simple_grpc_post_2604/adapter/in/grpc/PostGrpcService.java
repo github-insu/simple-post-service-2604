@@ -28,7 +28,7 @@ import org.springframework.grpc.server.service.GrpcService;
 public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
 
     private final PublishPostUseCase publishPostUseCase;
-//    private final ReadPostOneUseCase readPostOneUseCase;
+    private final ReadPostOneUseCase readPostOneUseCase;
 //    private final ReadPostListUseCase readPostListUseCase;
 //    private final EditPostUseCase editPostUseCase;
 //    private final DeletePostUseCase deletePostUseCase;
@@ -38,16 +38,34 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
 
         log.info("[PostGrpcService/publishPost] request title: {}", request.getTitle());
         Post post = Post.create(request.getTitle(), request.getContent());
-        PostPublishResponse response = publishPostUseCase.publish(post);
+
+        Post publishedPost = publishPostUseCase.publish(post);
+        log.info("[PostGrpcService/publishPost] publish saved post id: {}", publishedPost.id());
+        PostPublishResponse response = PostPublishResponse.newBuilder()
+                .setId(publishedPost.id())
+                .setTitle(publishedPost.title())
+                .setContent(publishedPost.content())
+                .build();
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
 
-//    @Override
-//    public void readPostOne(PostReadOneRequest request, StreamObserver<PostReadOneResponse> responseObserver) {
-//        super.readPostOne(request, responseObserver);
-//    }
+    @Override
+    public void readPostOne(PostReadOneRequest request, StreamObserver<PostReadOneResponse> responseObserver) {
+
+        log.info("[PostGrpcService/readPostOne] request id: {}", request.getId());
+        Post postById = readPostOneUseCase.readPostOne(request.getId());
+        log.info("[PostGrpcService/readPostOne] find post id: {}", postById.id());
+        PostReadOneResponse response = PostReadOneResponse.newBuilder()
+                .setId(postById.id())
+                .setTitle(postById.title())
+                .setContent(postById.content())
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
 //
 //    @Override
 //    public void readPostList(Empty request, StreamObserver<PostReadListResponse> responseObserver) {

@@ -29,4 +29,19 @@ public class PostRdbAdapter implements PostRepository {
                 savedEntity.getStatus()
         );
     }
+
+    @Override
+    public Post findPostById(Long userId) {
+        log.info("[PostRdbAdapter/findPostById] request user id: {}", userId);
+        PostEntity postById = postRdbRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다.")
+                );
+        log.info("[PostRdbAdapter/findPostById] find user id: {}", postById.getId());
+
+        return Post.restore(postById.getId(),
+                postById.getTitle(),
+                postById.getContent(),
+                postById.getStatus()
+        );
+    }
 }
