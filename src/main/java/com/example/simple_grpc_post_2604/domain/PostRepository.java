@@ -6,4 +6,5 @@ public interface PostRepository {
     Post save(Post post);
     Post findPostById(Long userId);
     List<Post> findPostAll();
+    Long deletePostById(Long userId);
 }

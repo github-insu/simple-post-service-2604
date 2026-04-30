@@ -1,9 +1,12 @@
 package com.example.simple_grpc_post_2604.adapter.in.grpc;
 
 import com.example.simple_grpc_post_2604.domain.Post;
+import com.example.simple_grpc_post_2604.usecase.DeletePostUseCase;
 import com.example.simple_grpc_post_2604.usecase.PublishPostUseCase;
 import com.example.simple_grpc_post_2604.usecase.ReadPostListUseCase;
 import com.example.simple_grpc_post_2604.usecase.ReadPostOneUseCase;
+import com.example.simplegrpcpost2604.grpc.PostDeleteRequest;
+import com.example.simplegrpcpost2604.grpc.PostDeleteResponse;
 import com.example.simplegrpcpost2604.grpc.PostPublishRequest;
 import com.example.simplegrpcpost2604.grpc.PostPublishResponse;
 import com.example.simplegrpcpost2604.grpc.PostReadListResponse;
@@ -27,7 +30,7 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
     private final ReadPostOneUseCase readPostOneUseCase;
     private final ReadPostListUseCase readPostListUseCase;
 //    private final EditPostUseCase editPostUseCase;
-//    private final DeletePostUseCase deletePostUseCase;
+    private final DeletePostUseCase deletePostUseCase;
 
     @Override
     public void publishPost(PostPublishRequest request, StreamObserver<PostPublishResponse> responseObserver) {
@@ -83,7 +86,6 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
             );
         }
 
-
         responseObserver.onNext(responseListBuilder.build());
         responseObserver.onCompleted();
     }
@@ -92,9 +94,17 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
 //    public void editPost(PostEditRequest request, StreamObserver<PostEditResponse> responseObserver) {
 //        super.editPost(request, responseObserver);
 //    }
-//
-//    @Override
-//    public void deletePost(PostDeleteRequest request, StreamObserver<PostDeleteResponse> responseObserver) {
-//        super.deletePost(request, responseObserver);
+
+    @Override
+    public void deletePost(PostDeleteRequest request, StreamObserver<PostDeleteResponse> responseObserver) {
+        log.info("[PostGrpcService/deletePost] request user id: {}", request.getId());
+        Long deletedUserIdById = deletePostUseCase.deletePost(request.getId());
+        PostDeleteResponse response = PostDeleteResponse.newBuilder()
+                .setId(deletedUserIdById)
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
 //    }
 }

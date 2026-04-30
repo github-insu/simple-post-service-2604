@@ -62,4 +62,16 @@ public class PostRdbAdapter implements PostRepository {
                         entity.getStatus()))
                 .toList();
     }
+
+    @Override
+    public Long deletePostById(Long userId) {
+        log.info("[PostRdbAdapter/deletePostById] request user id: {}", userId);
+
+        try {
+            postRdbRepository.deleteById(userId);
+            return userId;
+        } catch(Exception ex) {
+            throw new IllegalArgumentException("삭제를 실패했습니다.");
+        }
+    }
 }
