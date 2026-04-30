@@ -35,7 +35,7 @@ message PostReadOneResponse {
 }
 
 message PostReadListResponse {
-    repeated PostReadOneRequest postReadOneResponseList = 1;
+    repeated PostReadOneResponse postReadOneResponseList = 1;
 }
 
 message PostEditRequest {
