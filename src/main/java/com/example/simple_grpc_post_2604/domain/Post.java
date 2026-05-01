@@ -13,27 +13,30 @@ public class Post {
     private String title;
     private String content;
     private PostStatus status;
+    private Long userId;
 
-    private Post(Long id, String title, String content, PostStatus status) {
-        validatePost(title, content);
+    private Post(Long id, String title, String content, PostStatus status, Long userId) {
+        validatePost(title, content, userId);
         this.id = id;
         this.title = title;
         this.content = content;
         this.status = status;
+        this.userId = userId;
     }
 
-    public static Post create(String title, String content) {
-        return new Post(null, title, content, PostStatus.PUBLISHED);
+    public static Post create(String title, String content, Long userId) {
+        return new Post(null, title, content, PostStatus.PUBLISHED, userId);
     }
 
-    public static Post restore(Long id, String title, String content, PostStatus status) {
+    public static Post restore(Long id, String title, String content, PostStatus status, Long userId) {
         Objects.requireNonNull(id);
-        return new Post(id, title, content, status);
+        return new Post(id, title, content, status, userId);
     }
 
-    public void validatePost(String title, String content) {
+    public void validatePost(String title, String content, Long userId) {
         validateTitle(title);
         validateContent(content);
+        Objects.requireNonNull(userId);
     }
 
     public void validateTitle(String title) {
@@ -72,6 +75,10 @@ public class Post {
 
     public PostStatus status() {
         return this.status;
+    }
+
+    public Long userId() {
+        return this.userId;
     }
 
     @Override

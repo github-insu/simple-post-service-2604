@@ -35,4 +35,7 @@ public class PostEntity {
 
     @Enumerated(EnumType.STRING)
     private PostStatus status;
+
+    @Column(nullable = false, updatable = false)
+    private Long userId;
 }

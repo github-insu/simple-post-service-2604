@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface PostRepository {
     Post save(Post post);
-    Post findPostById(Long userId);
+    Post findPostByUserIdAndId(Long userId, Long postId);
     List<Post> findPostAll();
     int editPost(Post post);
     Long deletePostById(Long userId);

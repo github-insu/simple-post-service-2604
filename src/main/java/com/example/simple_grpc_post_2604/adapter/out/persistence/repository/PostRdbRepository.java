@@ -6,7 +6,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface PostRdbRepository extends JpaRepository<PostEntity, Long> {
+
+    Optional<PostEntity> findByUserIdAndId(Long userId, Long postId);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("""
@@ -15,12 +19,13 @@ public interface PostRdbRepository extends JpaRepository<PostEntity, Long> {
                     p.title = COALESCE(:title, p.title),
                     p.content = COALESCE(:content, p.content),
                     p.status = COALESCE(:status, p.status)
-                WHERE p.id = :id
+                WHERE p.id = :id AND p.userId = :userId
             """)
     int updatePostFields(
             @Param("id") Long id,
             @Param("title") String title,
             @Param("content") String content,
-            @Param("status") PostStatus status
+            @Param("status") PostStatus status,
+            @Param("userId") Long userId
     );
 }

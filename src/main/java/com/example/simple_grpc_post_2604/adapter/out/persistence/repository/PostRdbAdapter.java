@@ -21,6 +21,8 @@ public class PostRdbAdapter implements PostRepository {
         PostEntity entity = PostEntity.builder()
                 .title(post.title())
                 .content(post.content())
+                .status(post.status())
+                .userId(post.userId())
                 .build();
         PostEntity savedEntity = postRdbRepository.save(entity);
 
@@ -28,24 +30,28 @@ public class PostRdbAdapter implements PostRepository {
                 savedEntity.getId(),
                 savedEntity.getTitle(),
                 savedEntity.getContent(),
-                savedEntity.getStatus()
+                savedEntity.getStatus(),
+                savedEntity.getUserId()
         );
     }
 
     @Override
-    public Post findPostById(Long postId) {
+    public Post findPostByUserIdAndId(Long userId, Long postId) {
         log.info("[PostRdbAdapter/findPostById] request post id: {}", postId);
-        PostEntity postById = postRdbRepository.findById(postId)
+        PostEntity postById = postRdbRepository.findByUserIdAndId(userId, postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다.")
                 );
         log.info("[PostRdbAdapter/findPostById] find post id: {}", postById.getId());
 
-        return Post.restore(postById.getId(),
+        return Post.restore(
+                postById.getId(),
                 postById.getTitle(),
                 postById.getContent(),
-                postById.getStatus()
+                postById.getStatus(),
+                postById.getUserId()
         );
     }
+
 
     @Override
     public List<Post> findPostAll() {
@@ -59,14 +65,21 @@ public class PostRdbAdapter implements PostRepository {
                         entity.getId(),
                         entity.getTitle(),
                         entity.getContent(),
-                        entity.getStatus()))
+                        entity.getStatus(),
+                        entity.getUserId()))
                 .toList();
     }
 
     @Override
     public int editPost(Post post) {
         log.info("[PostRdbAdapter/editPost] request post id: {}", post.id());
-        return postRdbRepository.updatePostFields(post.id(), post.title(), post.content(), post.status());
+        return postRdbRepository.updatePostFields(
+                post.id(),
+                post.title(),
+                post.content(),
+                post.status(),
+                post.userId()
+        );
     }
 
     @Override

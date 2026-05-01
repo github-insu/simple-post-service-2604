@@ -15,10 +15,12 @@ public class ReadPostOneUseCase {
     private final PostRepository postRepository;
 
     @Transactional(readOnly = true)
-    public Post readPostOne(Long postId) {
+    public Post readPostOne(Long userId, Long postId) {
 
-        log.info("[ReadPostOneUseCase/readPostOne] request id: {}", postId);
-        Post postById = postRepository.findPostById(postId);
+        log.info("[ReadPostOneUseCase/readPostOne] request user id: {}", userId);
+        log.info("[ReadPostOneUseCase/readPostOne] request post id: {}", postId);
+        Post postById = postRepository.findPostByUserIdAndId(userId, postId);
+        log.info("[ReadPostOneUseCase/readPostOne] postById id: {}", postById.id());
         log.info("[ReadPostOneUseCase/readPostOne] postById id: {}", postById.id());
 
         return postById;

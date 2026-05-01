@@ -24,7 +24,7 @@ public class EditPostUseCase {
             throw new IllegalArgumentException("수정 작업이 실패했습니다.");
         }
 
-        Post editedPostById = postRepository.findPostById(post.id());
+        Post editedPostById = postRepository.findPostByUserIdAndId(post.userId(), post.id());
         log.info("[EditPostUseCase/editPost] find edited post title: {}", editedPostById.title());
         return editedPostById;
     }

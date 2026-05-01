@@ -40,14 +40,16 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
     public void publishPost(PostPublishRequest request, StreamObserver<PostPublishResponse> responseObserver) {
 
         log.info("[PostGrpcService/publishPost] request title: {}", request.getTitle());
-        Post post = Post.create(request.getTitle(), request.getContent());
+        Post post = Post.create(request.getTitle(), request.getContent(), request.getUserId());
 
         Post publishedPost = publishPostUseCase.publish(post);
         log.info("[PostGrpcService/publishPost] publish saved post id: {}", publishedPost.id());
+        log.info("[PostGrpcService/publishPost] publish saved post user id: {}", publishedPost.userId());
         PostPublishResponse response = PostPublishResponse.newBuilder()
                 .setId(publishedPost.id())
                 .setTitle(publishedPost.title())
                 .setContent(publishedPost.content())
+                .setUserId(publishedPost.userId())
                 .build();
 
         responseObserver.onNext(response);
@@ -57,13 +59,16 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
     @Override
     public void readPostOne(PostReadOneRequest request, StreamObserver<PostReadOneResponse> responseObserver) {
 
+        log.info("[PostGrpcService/readPostOne] request user id: {}", request.getUserId());
         log.info("[PostGrpcService/readPostOne] request post id: {}", request.getId());
-        Post postById = readPostOneUseCase.readPostOne(request.getId());
+        Post postById = readPostOneUseCase.readPostOne(request.getUserId(), request.getId());
+        log.info("[PostGrpcService/readPostOne] find user id: {}", postById.userId());
         log.info("[PostGrpcService/readPostOne] find post id: {}", postById.id());
         PostReadOneResponse response = PostReadOneResponse.newBuilder()
                 .setId(postById.id())
                 .setTitle(postById.title())
                 .setContent(postById.content())
+                .setUserId(postById.userId())
                 .build();
 
         responseObserver.onNext(response);
@@ -86,6 +91,7 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
                             .setId(post.id())
                             .setTitle(post.title())
                             .setContent(post.content())
+                            .setUserId(post.userId())
                             .build()
             );
         }
@@ -102,7 +108,8 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
                 request.getId(),
                 request.getTitle(),
                 request.getContent(),
-                PostStatus.PUBLISHED
+                PostStatus.PUBLISHED,
+                request.getUserId()
         );
 
         Post editedPost = editPostUseCase.editPost(requestPost);
@@ -113,6 +120,7 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
                 .setId(editedPost.id())
                 .setTitle(editedPost.title())
                 .setContent(editedPost.content())
+                .setUserId(editedPost.userId())
                 .build();
 
         responseObserver.onNext(response);
