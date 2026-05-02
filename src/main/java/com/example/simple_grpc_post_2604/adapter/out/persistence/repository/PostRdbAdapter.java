@@ -83,14 +83,13 @@ public class PostRdbAdapter implements PostRepository {
     }
 
     @Override
-    public Long deletePostById(Long postId) {
+    public Long deletePostByUserIdAndId(Long userId, Long postId) {
         log.info("[PostRdbAdapter/deletePostById] request post id: {}", postId);
+        int deletedPostCount = postRdbRepository.deletePostCount(userId, postId);
 
-        try {
-            postRdbRepository.deleteById(postId);
-            return postId;
-        } catch(Exception ex) {
-            throw new IllegalArgumentException("삭제를 실패했습니다.");
+        if (deletedPostCount == 0) {
+            throw new IllegalArgumentException("삭제할 게시글이 존재하지 않습니다.");
         }
+        return postId;
     }
 }

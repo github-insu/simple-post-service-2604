@@ -130,7 +130,7 @@ public class PostGrpcService extends PostServiceGrpc.PostServiceImplBase {
     @Override
     public void deletePost(PostDeleteRequest request, StreamObserver<PostDeleteResponse> responseObserver) {
         log.info("[PostGrpcService/deletePost] request post id: {}", request.getId());
-        Long deletedUserIdById = deletePostUseCase.deletePost(request.getId());
+        Long deletedUserIdById = deletePostUseCase.deletePost(request.getUserId(), request.getId());
         PostDeleteResponse response = PostDeleteResponse.newBuilder()
                 .setId(deletedUserIdById)
                 .build();

@@ -14,9 +14,10 @@ public class DeletePostUseCase {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long deletePost(Long postId) {
+    public Long deletePost(Long userId, Long postId) {
+        log.info("[DeletePostUseCase/deletePost] request user id: {}", userId);
         log.info("[DeletePostUseCase/deletePost] request post id: {}", postId);
-        Long deletedPostIdById = postRepository.deletePostById(postId);
+        Long deletedPostIdById = postRepository.deletePostByUserIdAndId(userId, postId);
         log.info("[DeletePostUseCase/deletePost] deleted post id: {}", deletedPostIdById);
 
         return deletedPostIdById;

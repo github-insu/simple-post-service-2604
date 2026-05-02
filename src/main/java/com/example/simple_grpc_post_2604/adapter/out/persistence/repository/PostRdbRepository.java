@@ -28,4 +28,9 @@ public interface PostRdbRepository extends JpaRepository<PostEntity, Long> {
             @Param("status") PostStatus status,
             @Param("userId") Long userId
     );
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("DELETE FROM PostEntity p WHERE p.id = :id AND p.userId = :userId")
+    int deletePostCount(@Param("userId") Long userId,
+                        @Param("id") Long id);
 }

@@ -7,5 +7,5 @@ public interface PostRepository {
     Post findPostByUserIdAndId(Long userId, Long postId);
     List<Post> findPostAll();
     int editPost(Post post);
-    Long deletePostById(Long userId);
+    Long deletePostByUserIdAndId(Long userId, Long postId);
 }
